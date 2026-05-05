@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-blue: #0ea5e9;
+  --color-surface-dark: #070b14;
+  --color-surface-panel: #0d1321;
+  --color-border-subtle: #1e293b;
+  --color-text-main: #f8fafc;
+  --color-text-dim: #64748b;
+}
+
+:root {
+  --bg-color: #f1f5f9;
+  --panel-color: #ffffff;
+  --border-color: #e2e8f0;
+  --text-main: #0f172a;
+  --text-dim: #64748b;
+  --accent-blue: #0284c7;
+}
+
+.dark {
+  --bg-color: var(--color-surface-dark);
+  --panel-color: var(--color-surface-panel);
+  --border-color: var(--color-border-subtle);
+  --text-main: var(--color-text-main);
+  --text-dim: var(--color-text-dim);
+  --accent-blue: #38bdf8;
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--bg-color)] text-[var(--text-main)] antialiased transition-colors duration-500 font-sans selection:bg-[var(--accent-blue)]/20;
+  }
+  
+  /* Modern scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { 
+    background: rgba(100,116,139,0.2); 
+    border-radius: 99px; 
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
+}
+
+.glass-panel {
+  @apply bg-[var(--panel-color)] border border-[var(--border-color)] shadow-[0_4px_20px_-5px_rgba(0,0,0,0.1)] transition-all duration-300;
+}
+.dark .glass-panel {
+  @apply bg-[var(--panel-color)]/50 backdrop-blur-md border-white/5 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)];
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
