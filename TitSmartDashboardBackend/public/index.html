@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hikvision Camera Stream Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .form-group { margin-bottom: 10px; }
+        label { display: inline-block; width: 100px; }
+        input { padding: 5px; width: 200px; }
+        button { padding: 8px 15px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .log-container { margin-top: 20px; background: #f4f4f4; padding: 10px; height: 200px; overflow-y: auto; font-family: monospace;}
+    </style>
+</head>
+<body>
+    <h2>Hikvision SDK Direct Stream Test</h2>
+    <p>This connects to the Node.js backend which directly bridges the Hikvision C++ SDK.</p>
+
+    <div class="form-group">
+        <label>IP:</label>
+        <input type="text" id="ip" value="192.168.1.64">
+    </div>
+    <div class="form-group">
+        <label>Port:</label>
+        <input type="text" id="port" value="8000">
+    </div>
+    <div class="form-group">
+        <label>User:</label>
+        <input type="text" id="user" value="admin">
+    </div>
+    <div class="form-group">
+        <label>Password:</label>
+        <input type="password" id="pass" value="">
+    </div>
+    <button onclick="startStream()">Start Stream</button>
+    <button onclick="stopStream()" style="background: #dc3545;">Stop Stream</button>
+
+    <div class="log-container" id="log"></div>
+
+    <script>
+        let ws;
+        const logEl = document.getElementById('log');
+
+        function log(msg) {
+            logEl.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function startStream() {
+            if (ws) {
+                log('Stream already running. Stop it first.');
+                return;
+            }
+
+            const ip = document.getElementById('ip').value;
+            const port = document.getElementById('port').value;
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
+
+            const wsUrl = `ws://${window.location.host}/stream?ip=${ip}&port=${port}&user=${user}&pass=${pass}`;
+            log(`Connecting to ${wsUrl}...`);
+
+            ws = new WebSocket(wsUrl);
+            ws.binaryType = 'arraybuffer';
+
+            ws.onopen = () => {
+                log('WebSocket connected. Requesting stream from C++ SDK...');
+            };
+
+            let bytesReceived = 0;
+            let lastLogTime = Date.now();
+
+            ws.onmessage = (event) => {
+                if (typeof event.data === 'string') {
+                    log(`Server Msg: ${event.data}`);
+                    return;
+                }
+                
+                // We are receiving binary PS format buffers from the C++ SDK
+                bytesReceived += event.data.byteLength;
+                
+                // Throttle the log so we don't freeze the browser
+                if (Date.now() - lastLogTime > 1000) {
+                    log(`Receiving data... Total: ${(bytesReceived / 1024).toFixed(2)} KB`);
+                    lastLogTime = Date.now();
+                }
+
+                // NOTE: To ACTUALLY render this raw PS stream in the browser:
+                // You will need a JS demuxer (like jmuxer) to extract H.264 NAL units, 
+                // and push them into MediaSource Extensions (MSE) buffer, OR use a Wasm Decoder.
+            };
+
+            ws.onerror = (err) => {
+                log('WebSocket error occurred.');
+                console.error(err);
+            };
+
+            ws.onclose = () => {
+                log('WebSocket closed.');
+                ws = null;
+            };
+        }
+
+        function stopStream() {
+            if (ws) {
+                log('Closing WebSocket connection (will stop SDK stream)...');
+                ws.close();
+            }
+        }
+    </script>
+</body>
+</html>
