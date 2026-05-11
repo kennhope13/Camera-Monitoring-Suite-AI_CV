@@ -1,0 +1,69 @@
+{
+  "name": "titsmartdashboardbackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "nodemon",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "electron:build": "electron-builder --win",
+    "electron:build:linux": "electron-builder --linux AppImage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/ws": "^8.18.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "ini": "^6.0.0",
+    "node-addon-api": "^8.7.0",
+    "socket.io": "^4.8.3",
+    "ws": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/ini": "^4.1.1",
+    "@types/node": "^25.6.0",
+    "@types/socket.io": "^3.0.1",
+    "concurrently": "^9.2.1",
+    "electron": "^33.0.2",
+    "electron-builder": "^26.8.1",
+    "node-gyp": "^12.3.0",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3",
+    "wait-on": "^9.0.5"
+  },
+  "build": {
+    "appId": "com.titsmart.dashboard",
+    "productName": "TitSmartDashboard",
+    "win": {
+      "target": "nsis",
+      "icon": "public/icon.ico"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "files": [
+      "main.js",
+      "package.json"
+    ],
+    "extraFiles": [
+      { "from": "public", "to": "public" },
+      { "from": "build-js", "to": "build-js" },
+      { "from": "node_modules", "to": "node_modules" },
+      { "from": "mediamtx.exe", "to": "mediamtx.exe" },
+      { "from": "mediamtx.yml", "to": "mediamtx.yml" },
+      { "from": "detect_plasma.exe", "to": "detect_plasma.exe" },
+      { "from": "ai_config.json", "to": "ai_config.json" },
+      { "from": "build/Release/hikvision.node", "to": "build/Release/hikvision.node" },
+      { "from": "lib", "to": "lib" }
+    ],
+    "asar": false
+  }
+}

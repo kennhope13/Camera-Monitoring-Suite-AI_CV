@@ -1,7 +1,5 @@
 import type { Device } from '@/types';
-
-import type { Device } from '@/types';
-import { Wifi, Bell, User, LightningCharge } from "lucide-react";
+import { Wifi, Bell, User, Zap as LightningCharge } from "lucide-react";
 
 interface HeaderProps {
     lang: 'vi' | 'en';

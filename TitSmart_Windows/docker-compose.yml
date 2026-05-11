@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  titsmart-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: titsmart_dashboard
+    ports:
+      - "3000:3000"   # API & Web UI
+      - "8554:8554"   # RTSP
+      - "8888:8888"   # HLS
+      - "8889:8889"   # WebRTC (WHEP)
+    volumes:
+      - ./datasets:/app/datasets # Gắn thư mục video vào để AI có thể đọc và thay đổi
+    restart: always

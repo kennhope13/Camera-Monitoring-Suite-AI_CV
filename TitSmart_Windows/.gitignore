@@ -1,0 +1,28 @@
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# C++ Build Artifacts
+build/
+*.o
+*.so
+*.a
+*.exe
+.vscode/
+.idea/
+
+# Libraries and Binaries
+lib/
+consoleDemo/linux64/lib/
+QtDemo/Linux64/lib/
+LinuxJavaDemo/libs/
+
+# OS specific
+.DS_Store
+Thumbs.db
