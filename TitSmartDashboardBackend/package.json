@@ -2,12 +2,13 @@
   "name": "titsmartdashboardbackend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
+    "start": "electron .",
+    "dev": "nodemon",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "electron:build": "electron-builder --linux AppImage"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "express": "^5.2.1",
     "ini": "^6.0.0",
     "node-addon-api": "^8.7.0",
+    "socket.io": "^4.8.3",
     "ws": "^8.20.0"
   },
   "devDependencies": {
@@ -26,9 +28,43 @@
     "@types/express": "^5.0.6",
     "@types/ini": "^4.1.1",
     "@types/node": "^25.6.0",
+    "@types/socket.io": "^3.0.1",
+    "concurrently": "^9.2.1",
+    "electron": "^42.0.1",
+    "electron-builder": "^26.8.1",
     "node-gyp": "^12.3.0",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wait-on": "^9.0.5"
+  },
+  "build": {
+    "appId": "com.titsmart.dashboard",
+    "productName": "TitSmartDashboard",
+    "linux": {
+      "target": "AppImage"
+    },
+    "files": [
+      "main.js",
+      "package.json"
+    ],
+    "extraFiles": [
+      { "from": "public", "to": "public" },
+      { "from": "build", "to": "build" },
+      { "from": "node_modules", "to": "node_modules" },
+      { "from": "mediamtx", "to": "mediamtx" },
+      { "from": "mediamtx.yml", "to": "mediamtx.yml" },
+      { "from": "detect_plasma", "to": "detect_plasma" },
+      { "from": "ai_config.json", "to": "ai_config.json" },
+      { "from": "run_video.sh", "to": "run_video.sh" },
+      {
+        "from": "build/Release/hikvision.node",
+        "to": "build/Release/hikvision.node"
+      },
+      {
+        "from": "../lib",
+        "to": "lib"
+      }
+    ]
   }
 }
