@@ -1,0 +1,63 @@
+2026/05/10 09:49:20 INF MediaMTX v1.7.0
+2026/05/10 09:49:20 INF configuration loaded from /media/neit/New Volume/Anh_Nhan/EN-HCNetSDKV6.1.9.4_build20220412_linux64/EN-HCNetSDKV6.1.9.4_build20220412_linux64/TitSmartDashboardBackend/mediamtx.yml
+2026/05/10 09:49:20 INF [path cam1] [RTSP source] started
+2026/05/10 09:49:20 INF [path cam_tiadien] runOnInit command started
+2026/05/10 09:49:20 INF [RTSP] listener opened on :8554 (TCP), :8000 (UDP/RTP), :8001 (UDP/RTCP)
+2026/05/10 09:49:20 INF [RTMP] listener opened on :1935
+2026/05/10 09:49:20 INF [HLS] listener opened on :8888
+2026/05/10 09:49:20 INF [WebRTC] listener opened on :8889 (HTTP), :8189 (ICE/UDP)
+2026/05/10 09:49:20 INF [SRT] listener opened on :8890 (UDP)
+ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 13 (Ubuntu 13.2.0-23ubuntu3)
+  configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  libavutil      58. 29.100 / 58. 29.100
+  libavcodec     60. 31.102 / 60. 31.102
+  libavformat    60. 16.100 / 60. 16.100
+  libavdevice    60.  3.100 / 60.  3.100
+  libavfilter     9. 12.100 /  9. 12.100
+  libswscale      7.  5.100 /  7.  5.100
+  libswresample   4. 12.100 /  4. 12.100
+  libpostproc    57.  3.100 / 57.  3.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/home/neit/Desktop/Anh_Nhan/datasets/tiadien_nen/2aOboQVBTTIbZ2S0vm9aBOlNATPyY7NBax6eUP0C.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf60.16.100
+  Duration: 00:00:07.66, start: 0.000000, bitrate: 1367 kb/s
+  Stream #0:0[0x1](und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 128 kb/s (default)
+    Metadata:
+      handler_name    : SoundHandler
+      vendor_id       : [0][0][0][0]
+  Stream #0:1[0x2](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt470bg/smpte170m/bt709, progressive), 720x404, 1212 kb/s, 19.98 fps, 59.94 tbr, 90k tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+2026/05/10 09:49:20 INF [RTSP] [conn 127.0.0.1:39306] opened
+2026/05/10 09:49:20 INF [RTSP] [session d7bfe0c2] created by 127.0.0.1:39306
+2026/05/10 09:49:20 INF [RTSP] [session d7bfe0c2] is publishing to path 'cam_tiadien', 2 tracks (H264, MPEG-4 Audio)
+Output #0, rtsp, to 'rtsp://localhost:8554/cam_tiadien':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf60.16.100
+  Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt470bg/smpte170m/bt709, progressive), 720x404, q=2-31, 1212 kb/s, 19.98 fps, 59.94 tbr, 90k tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+  Stream #0:1(und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 128 kb/s (default)
+    Metadata:
+      handler_name    : SoundHandler
+      vendor_id       : [0][0][0][0]
+Stream mapping:
+  Stream #0:1 -> #0:0 (copy)
+  Stream #0:0 -> #0:1 (copy)
+Press [q] to stop, [?] for help
+size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    size=N/A time=00:00:01.00 bitrate=N/A speed=   2x    2026/05/10 09:49:21 INF [path cam1] [RTSP source] ready: 1 track (H264)
+size=N/A time=00:00:01.51 bitrate=N/A speed=1.51x    size=N/A time=00:00:02.00 bitrate=N/A speed=1.33x    size=N/A time=00:00:02.53 bitrate=N/A speed=1.26x    size=N/A time=00:00:03.05 bitrate=N/A speed=1.21x    size=N/A time=00:00:03.55 bitrate=N/A speed=1.17x    size=N/A time=00:00:04.05 bitrate=N/A speed=1.14x    size=N/A time=00:00:04.56 bitrate=N/A speed=1.13x    size=N/A time=00:00:05.05 bitrate=N/A speed=1.11x    size=N/A time=00:00:05.58 bitrate=N/A speed= 1.1x    size=N/A time=00:00:06.10 bitrate=N/A speed=1.09x    size=N/A time=00:00:06.60 bitrate=N/A speed=1.08x    size=N/A time=00:00:07.10 bitrate=N/A speed=1.08x    size=N/A time=00:00:07.61 bitrate=N/A speed=1.07x    size=N/A time=00:00:08.12 bitrate=N/A speed=1.07x    size=N/A time=00:00:08.63 bitrate=N/A speed=1.06x    size=N/A time=00:00:09.15 bitrate=N/A speed=1.06x    size=N/A time=00:00:09.65 bitrate=N/A speed=1.06x    size=N/A time=00:00:10.15 bitrate=N/A speed=1.05x    size=N/A time=00:00:10.66 bitrate=N/A speed=1.05x    size=N/A time=00:00:11.19 bitrate=N/A speed=1.05x    size=N/A time=00:00:11.71 bitrate=N/A speed=1.05x    size=N/A time=00:00:12.21 bitrate=N/A speed=1.04x    size=N/A time=00:00:12.71 bitrate=N/A speed=1.04x    size=N/A time=00:00:13.24 bitrate=N/A speed=1.04x    size=N/A time=00:00:13.75 bitrate=N/A speed=1.04x    size=N/A time=00:00:14.26 bitrate=N/A speed=1.04x    size=N/A time=00:00:14.76 bitrate=N/A speed=1.04x    size=N/A time=00:00:15.27 bitrate=N/A speed=1.03x    [aost#0:1/copy @ 0x590d9ecf8200] Error submitting a packet to the muxer: Broken pipe
+[out#0/rtsp @ 0x590d9ec5e240] Error muxing a packet
+[out#0/rtsp @ 0x590d9ec5e240] Error writing trailer: Broken pipe
+[out#0/rtsp @ 0x590d9ec5e240] video:2281kB audio:241kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: unknown
+size=N/A time=00:00:15.46 bitrate=N/A speed=1.03x    
+Conversion failed!
