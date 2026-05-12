@@ -1,64 +1,54 @@
-# TitSmart Dashboard - Hướng dẫn cài đặt (New Machine)
+# HƯỚNG DẪN CHẠY HỆ THỐNG TITSMART DASHBOARD
 
-Dự án này bao gồm 3 phần chính: **Frontend (Vue.js)**, **Backend (Node.js/Electron)** và **AI Services (Python)**.
+Để theo dõi log và quản lý hệ thống tốt nhất, bạn hãy mở **4 cửa sổ Terminal** riêng biệt và chạy các lệnh sau theo thứ tự:
 
-## 1. Yêu cầu hệ thống
-- **Hệ điều hành**: Linux (Khuyên dùng Ubuntu 20.04+)
-- **Node.js**: v16+
-- **Python**: 3.8+
-- **Công cụ**: FFmpeg, MediaMTX
+---
 
-## 2. Cài đặt các thành phần
+### Terminal 1: Máy chủ Video (MediaMTX)
+Đây là trái tim của hệ thống video, xử lý luồng cho cả 4 camera.
+```bash
+cd /home/neit/TitSmartProject/TitSmartDashboardBackend
+./mediamtx
+```
+*Dấu hiệu chạy tốt: Sẽ thấy các dòng log báo "runOnInit command started" cho các cam.*
 
-### A. Backend & MediaMTX
-1. Di chuyển vào thư mục backend:
-   ```bash
-   cd TitSmartDashboardBackend
-   npm install
-   ```
-2. Đảm bảo file `mediamtx` có quyền thực thi:
-   ```bash
-   chmod +x mediamtx
-   ```
+---
 
-### B. Frontend
-1. Di chuyển vào thư mục frontend:
-   ```bash
-   cd TitSmart_client
-   npm install
-   ```
+### Terminal 2: Backend Server (Node.js)
+Xử lý dữ liệu, API điều khiển và gửi thông báo cảnh báo lên Web.
+```bash
+cd /home/neit/TitSmartProject/TitSmartDashboardBackend
+npm run dev
+```
+*Dấu hiệu chạy tốt: Báo "Server is running at http://localhost:3000".*
 
-### C. AI Services (Python)
-1. Cài đặt các thư viện cần thiết:
-   ```bash
-   pip3 install opencv-python numpy requests
-   ```
+---
 
-## 3. Cấu hình đường dẫn (QUAN TRỌNG)
-Khi chuyển sang máy mới, bạn cần kiểm tra và cập nhật đường dẫn video trong các file sau nếu thư mục `datasets` của bạn nằm ở vị trí khác:
+### Terminal 3: Dịch vụ AI (Nhận diện sự cố)
+Chạy các script AI để phát hiện tia điện, chuột và người để gửi thông báo kèm ảnh snapshot.
+```bash
+cd /home/neit/TitSmartProject/TitSmartDashboardBackend
+python3 detect_plasma.py & python3 detect_rat.py
+```
+*Dấu hiệu chạy tốt: Báo "AI Analysis Started...". Cảnh báo sẽ tự động gửi lên mỗi khi có sự cố.*
 
-1. **`TitSmartDashboardBackend/src/routes/dashboard.routes.ts`**:
-   - Cập nhật `plasmaVideo` và `darkVideo`.
-2. **`TitSmartDashboardBackend/mediamtx.yml`**:
-   - Cập nhật đường dẫn file `.mp4` trong các lệnh `ffmpeg`.
-3. **`TitSmartDashboardBackend/detect_plasma.py`**:
-   - Cập nhật đường dẫn video mặc định trong hàm `get_video_path`.
+---
 
-## 4. Cách chạy hệ thống
-1. **Khởi chạy toàn bộ (qua Electron)**:
-   ```bash
-   cd TitSmartDashboardBackend
-   npm start
-   ```
-2. **Chạy thủ công để Debug**:
-   - Chạy MediaMTX: `./mediamtx`
-   - Chạy Backend: `npm run dev`
-   - Chạy Frontend: `cd TitSmart_client && npm run serve`
-   - Chạy AI: `python3 detect_plasma.py`
+### Terminal 4: Frontend Dashboard (Giao diện Web)
+Khởi chạy giao diện người dùng trên trình duyệt.
+```bash
+cd /home/neit/TitSmartProject/TitSmart_client
+npm run serve
+```
+*Dấu hiệu chạy tốt: Báo "App running at: http://localhost:8080/".*
 
-## 5. Lưu ý về Hikvision SDK
-- Thư mục `lib` chứa các file `.so` của Hikvision SDK.
-- Nếu gặp lỗi không tìm thấy thư viện, hãy thêm đường dẫn `lib` vào `LD_LIBRARY_PATH`:
-  ```bash
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/lib
-  ```
+---
+
+## 💡 Lưu ý khi sử dụng:
+1. **Thứ tự**: Nên chạy Terminal 1 và 2 trước, sau đó đến Terminal 3 và 4.
+2. **Xem Nhật ký**: Bấm nút **"View All Logs"** trên giao diện web để xem lại lịch sử và ảnh snapshot đã chụp.
+3. **Ảnh Snapshot**: Được lưu tại thư mục `/home/neit/TitSmartProject/TitSmartDashboardBackend/public/snapshots`.
+4. **Dọn dẹp**: Các ảnh snapshot cũ hơn 24h sẽ được Backend tự động xóa để tiết kiệm bộ nhớ.
+
+---
+*Chúc bạn vận hành hệ thống thành công!*
