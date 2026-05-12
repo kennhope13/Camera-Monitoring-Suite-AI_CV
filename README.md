@@ -38,6 +38,10 @@ npm run serve
 
 ## 🛑 Cách dừng hệ thống an toàn
 - Tại mỗi Terminal, bạn chỉ cần nhấn **`Ctrl + C`** để dừng dịch vụ đó.
+- **Lưu ý riêng cho Terminal 3/4 (Video Vòng lặp)**: Nếu nhấn `Ctrl + C` mà nó vẫn tự động Restart, hãy dùng lệnh sau để ngắt hẳn vòng lặp:
+  ```bash
+  pkill -f run_video.sh
+  ```
 - Nếu muốn chắc chắn mọi thứ đã dừng hẳn (không chạy ngầm), hãy chạy file:
   ```bash
   cd /home/neit/TitSmartProject
