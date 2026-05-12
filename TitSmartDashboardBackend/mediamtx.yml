@@ -626,3 +626,11 @@ paths:
     rtspTransport: tcp
     sourceProtocol: tcp
     sourceOnDemandStartTimeout: 30s
+
+#  cam3:
+#    runOnInit: ffmpeg -re -stream_loop -1 -i /home/neit/Desktop/Anh_Nhan/divat_ir.v1i.yolo26/divat_1_night_ir_final.mp4 -c:v libx264 -preset ultrafast -tune zerolatency -an -f rtsp rtsp://localhost:$RTSP_PORT/$MTX_PATH
+#    runOnInitRestart: yes
+#
+##  cam4:
+#    runOnInit: ffmpeg -re -stream_loop -1 -i /home/neit/Desktop/Anh_Nhan/datasets/result_detect_compressed.mp4 -c:v libx264 -preset ultrafast -tune zerolatency -an -f rtsp rtsp://localhost:$RTSP_PORT/$MTX_PATH
+#    runOnInitRestart: yes

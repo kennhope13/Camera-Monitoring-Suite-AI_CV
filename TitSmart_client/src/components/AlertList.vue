@@ -8,21 +8,35 @@
         <div class="alert-timestamp">{{ alert.timestamp }}</div>
         <div class="alert-title">{{ alert.titleKey ? $t(alert.titleKey) : (alert.title || '') }}</div>
         <div class="alert-description" v-html="alert.descKey ? $t(alert.descKey) : (alert.description || '')"></div>
+        
+        <!-- Snapshot Image Display -->
+        <div v-if="alert.imageUrl" class="alert-snapshot">
+          <el-image 
+            :src="'http://localhost:3000' + alert.imageUrl" 
+            :preview-src-list="['http://localhost:3000' + alert.imageUrl]"
+            fit="cover"
+            class="snapshot-img"
+            :preview-teleported="true"
+          />
+        </div>
+
         <el-button v-if="alert.actionTextKey || alert.actionText" type="text" class="action-button">
           {{ alert.actionTextKey ? $t(alert.actionTextKey) : alert.actionText }}
         </el-button>
       </div>
     </div>
     <div class="alert-footer">
-      <el-button type="text" class="view-all-button">{{ $t('common.viewAllLogs') }}</el-button>
+      <el-button type="text" class="view-all-button" @click="emit('view-all')">{{ $t('common.viewAllLogs') }}</el-button>
     </div>
   </DashboardCard>
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 import DashboardCard from './DashboardCard.vue'
 import { Setting } from '@element-plus/icons-vue'
+
+const emit = defineEmits(['view-all'])
 
 defineProps({
   alerts: {
@@ -44,60 +58,70 @@ defineProps({
   border: 1px solid var(--el-border-color);
   border-left-width: 3px;
   border-left-color: transparent;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
   color: var(--el-text-color-primary);
   transition: all 0.15s ease-out;
   cursor: pointer;
 
   &:hover {
-    transform: none;
     background-color: var(--el-fill-color-light);
-    box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.05);
   }
 
   &.red-alert {
     border-left-color: var(--el-color-danger);
-    &:hover {
-       border-color: var(--el-color-danger);
-       border-left-width: 3px;
-       box-shadow: 0 0 15px rgba(245, 108, 108, 0.5), inset 0 0 10px rgba(245, 108, 108, 0.2);
-    }
+    background: linear-gradient(90deg, rgba(245, 108, 108, 0.05) 0%, transparent 100%);
   }
 
-  &.blue-alert {
-    border-left-color: var(--el-color-primary);
+  &.system-login {
+    border-left-color: var(--el-color-success);
+  }
+}
+
+.alert-snapshot {
+  margin: 10px 0;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--el-border-color-lighter);
+  
+  .snapshot-img {
+    width: 100%;
+    height: 120px;
+    display: block;
+    transition: transform 0.3s;
+    
     &:hover {
-       border-color: var(--el-color-primary);
-       border-left-width: 3px;
-       box-shadow: 0 0 15px rgba(24, 144, 255, 0.5), inset 0 0 10px rgba(24, 144, 255, 0.2);
+      transform: scale(1.05);
     }
   }
 }
 
 .alert-timestamp {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--el-text-color-secondary);
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .alert-title {
-  font-weight: bold;
-  margin-bottom: 5px;
-  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--el-text-color-primary);
 }
 
 .alert-description {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--el-text-color-regular);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  line-height: 1.4;
 }
 
 .action-button {
   color: var(--el-color-primary);
-  font-size: 12px;
+  font-size: 11px;
   padding: 0;
+  font-weight: bold;
 }
 
 .alert-footer {
@@ -109,11 +133,7 @@ defineProps({
 
 .view-all-button {
   color: var(--el-color-primary);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
-}
-
-.el-icon {
-  color: var(--el-text-color-secondary);
 }
 </style>

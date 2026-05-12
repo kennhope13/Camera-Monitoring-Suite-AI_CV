@@ -102,7 +102,7 @@
                 </DashboardCard>
               </transition>
 
-              <AlertList :alerts="alerts" />
+              <AlertList :alerts="alerts" @view-all="handleViewAllLogs" />
               
               <div class="map-box">
                 <CameraMap :cameras="cameras" />
@@ -113,7 +113,54 @@
       </el-container>
     </el-container>
     
-    <el-button type="primary" :icon="Plus" circle class="fab-main" />
+    <StatusFooter :camera-list="cameraList" />
+
+    <!-- Full Logs Dialog -->
+    <el-dialog
+      v-model="showLogsDialog"
+      title="NHẬT KÝ HỆ THỐNG CHI TIẾT"
+      width="85%"
+      top="5vh"
+      class="logs-dialog"
+      :fullscreen="false"
+      destroy-on-close
+    >
+      <div class="logs-container">
+        <div class="logs-header">
+            <el-button type="primary" size="small" @click="fetchLogs">Làm mới nhật ký</el-button>
+        </div>
+        <el-table :data="allLogs" style="width: 100%" height="70vh" stripe>
+          <el-table-column prop="date" label="Ngày" width="120" />
+          <el-table-column prop="timestamp" label="Giờ" width="100" />
+          <el-table-column prop="title" label="Sự kiện" width="220" />
+          <el-table-column prop="description" label="Chi tiết">
+              <template #default="scope">
+                  <div v-html="scope.row.description"></div>
+              </template>
+          </el-table-column>
+          <el-table-column label="Hình ảnh" width="180">
+            <template #default="scope">
+              <el-image 
+                v-if="scope.row.imageUrl"
+                :src="'http://localhost:3000' + scope.row.imageUrl" 
+                :preview-src-list="['http://localhost:3000' + scope.row.imageUrl]"
+                fit="cover"
+                style="width: 100px; height: 60px; border-radius: 4px;"
+                :preview-teleported="true"
+              />
+              <span v-else>Không có ảnh</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="Trạng thái" width="120">
+            <template #default="scope">
+              <el-tag :type="scope.row.type === 'red-alert' ? 'danger' : 'success'">
+                {{ scope.row.type === 'red-alert' ? 'NGUY HIỂM' : 'THÔNG TIN' }}
+              </el-tag>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -140,18 +187,22 @@ export default {
       plasmaAlertActive: false, 
       plasmaTimeout: null,
       alarmInterval: null,
-      videoMode: 'test',
+      lastAlerts: {}, 
+      showLogsDialog: false,
+      allLogs: [],
+      videoMode: 'normal',
       loadingMode: null,
       cameraList: [
-        { id: 'cam1', title: 'CAM 01: MƯỜNG CÁP', temp: 42, alert: false, isWebRTC: true, streamName: 'cam1', imageSrc: '/src/assets/dashboard-background.jpg' },
-        { id: 'cam2', title: 'CAM 02: TỦ ĐIỆN', temp: null, alert: false, isWebRTC: true, streamName: 'cam_tiadien', imageSrc: '/src/assets/dashboard-background.jpg' },
-        { id: 'cam3', title: 'CAM 03: GIÁM SÁT SƯ', temp: null, alert: false, isWebRTC: false, imageSrc: '/src/assets/dashboard-background.jpg' }
+        { id: 'cam1', title: 'CAM 01: MƯƠNG CÁP', temp: 42, alert: false, isWebRTC: true, streamName: 'cam1', imageSrc: '/src/assets/dashboard-background.jpg' },
+        { id: 'cam2', title: 'CAM 02: TỦ ĐIỆN 1', temp: null, alert: false, isWebRTC: true, streamName: 'cam_tiadien', imageSrc: '/src/assets/dashboard-background.jpg' },
+        { id: 'cam3', title: 'CAM 03: TỦ ĐIỆN 2', temp: null, alert: false, isWebRTC: true, streamName: 'cam3', imageSrc: '/src/assets/dashboard-background.jpg' },
+        { id: 'cam4', title: 'CAM 04: NGƯỜI CÓ CHỨC VỤ', temp: null, alert: false, isWebRTC: true, streamName: 'cam4', imageSrc: '/src/assets/dashboard-background.jpg' }
       ],
       alerts: [
         { id: 1, type: 'red-alert', timestamp: '10:42:15', title: 'HỆ THỐNG SẴN SÀNG', description: 'Đang giám sát tia điện trạm biến áp.', actionText: 'OK' }
       ],
       chartSeriesData: [{ name: 'Ổn định', type: 'line', data: [220, 182, 191, 234, 290, 330, 310] }],
-      cameras: [{ id: 1, x: 80, y: 80 }, { id: 2, x: 320, y: 180 }]
+      cameras: [{ id: 1, x: 80, y: 80 }, { id: 2, x: 320, y: 180 }, { id: 3, x: 150, y: 220 }, { id: 4, x: 280, y: 80 }]
     }
   },
   mounted() { this.connectWebSocket(); },
@@ -166,27 +217,40 @@ export default {
   methods: {
     handleAlertMessage(message) {
       if (message.type === 'NEW_ALERT') {
-        if (!this.plasmaAlertActive) {
-            this.plasmaAlertActive = true;
-            this.startAlarmCycle();
-            this.showGlobalNotification();
+        const camId = message.data.camId || 'default';
+        const now = Date.now();
+        
+        // Throttling: Only show notification if 10 seconds have passed for this cam
+        const shouldNotify = !this.lastAlerts[camId] || (now - this.lastAlerts[camId] > 10000);
+        
+        if (shouldNotify) {
+            this.lastAlerts[camId] = now;
+            
+            // Only show global notification (toast) for dangerous alerts (red-alert)
+            if (message.data.type === 'red-alert') {
+                if (!this.plasmaAlertActive) {
+                    this.plasmaAlertActive = true;
+                    this.startAlarmCycle();
+                }
+                this.showGlobalNotification(message.data);
+            }
         }
+
         if (this.plasmaTimeout) clearTimeout(this.plasmaTimeout);
         this.plasmaTimeout = setTimeout(() => {
           this.plasmaAlertActive = false;
           this.stopAlarmCycle();
         }, 5000);
-        const lastAlert = this.alerts[0];
-        if (!lastAlert || (Date.now() - lastAlert.id > 3000)) {
-            const newAlert = {
-              id: Date.now(),
-              timestamp: new Date().toLocaleTimeString('vi-VN', { hour12: false }),
-              ...message.data,
-              actionText: 'XỬ LÝ KHẨN CẤP'
-            };
-            this.alerts.unshift(newAlert);
-            if (this.alerts.length > 20) this.alerts.pop();
-        }
+
+        // Always add to history list, but limit frequency
+        const newAlert = {
+            id: now,
+            timestamp: new Date().toLocaleTimeString('vi-VN', { hour12: false }),
+            ...message.data,
+            actionText: message.data.type === 'red-alert' ? 'XỬ LÝ KHẨN CẤP' : 'XEM'
+        };
+        this.alerts.unshift(newAlert);
+        if (this.alerts.length > 30) this.alerts.pop();
       }
     },
     startAlarmCycle() {
@@ -202,13 +266,19 @@ export default {
             this.alarmInterval = null;
         }
     },
-    showGlobalNotification() {
+    showGlobalNotification(data) {
         if (this.$notify) {
           this.$notify({
-            title: '!!! NGUY HIỂM: TIA ĐIỆN !!!',
-            message: 'Phát hiện phóng điện tại Tủ điện (CAM-02). Yêu cầu kiểm tra ngay!',
+            title: data.title || '!!! CẢNH BÁO !!!',
+            dangerouslyUseHTMLString: true,
+            message: `
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <p>${data.description}</p>
+                ${data.imageUrl ? `<img src="http://localhost:3000${data.imageUrl}" style="width: 100%; border-radius: 4px; margin-top: 5px;" />` : ''}
+              </div>
+            `,
             type: 'error',
-            duration: 0,
+            duration: 5000,
             position: 'top-right'
           });
         }
@@ -226,6 +296,19 @@ export default {
       } catch (e) { console.warn('WS connection failed'); }
     },
     setActiveCamera(id) { this.activeCameraId = id; },
+    async fetchLogs() {
+        try {
+            const hostname = window.location.hostname || 'localhost';
+            const res = await fetch(`http://${hostname}:3000/api/dashboard/logs`);
+            this.allLogs = await res.json();
+        } catch (e) {
+            console.error('Failed to fetch logs:', e);
+        }
+    },
+    handleViewAllLogs() {
+        this.showLogsDialog = true;
+        this.fetchLogs();
+    },
     async toggleVideo(mode) {
       if (this.loadingMode) return;
       this.loadingMode = mode;

@@ -3,12 +3,15 @@ import numpy as np
 import time
 import os
 import requests
-import sys
 import json
 
 # NOTIFY_URL for backend
 NOTIFY_URL = "http://localhost:3000/notify_alert"
 CONFIG_FILE = os.environ.get("AI_CONFIG_PATH", os.path.join(os.path.dirname(__file__), "ai_config.json"))
+SNAPSHOT_DIR = os.path.join(os.path.dirname(__file__), "public/snapshots")
+
+if not os.path.exists(SNAPSHOT_DIR):
+    os.makedirs(SNAPSHOT_DIR, exist_ok=True)
 
 def get_video_path():
     try:
@@ -20,15 +23,23 @@ def get_video_path():
         pass
     return "/home/neit/Desktop/Anh_Nhan/datasets/tiadien_nen/2aOboQVBTTIbZ2S0vm9aBOlNATPyY7NBax6eUP0C.mp4"
 
-def send_alert(intensity):
+def send_alert(intensity, frame):
+    timestamp = int(time.time())
+    snapshot_filename = f"plasma_{timestamp}.jpg"
+    snapshot_path = os.path.join(SNAPSHOT_DIR, snapshot_filename)
+    
+    # Save the frame
+    cv2.imwrite(snapshot_path, frame)
+    
     payload = {
-        "title": "PHÁT HIỆN TIA ĐIỆN PLASMA",
-        "description": f"Vị trí: Tủ điện (CAM-02).<br>Cường độ: {intensity} pixel.<br>Hệ thống AI tự động phát hiện.",
+        "title": "NGUY HIỂM: TIA ĐIỆN PLASMA",
+        "description": f"Phát hiện phóng điện tại Tủ điện 1 (CAM-02). Cường độ: {intensity}px.",
         "type": "red-alert",
-        "camId": "cam2"
+        "camId": "cam2",
+        "imageUrl": f"/snapshots/{snapshot_filename}"
     }
     try:
-        r = requests.post(NOTIFY_URL, json=payload, timeout=0.5)
+        requests.post(NOTIFY_URL, json=payload, timeout=0.5)
     except:
         pass
 
@@ -36,19 +47,17 @@ def detect_plasma():
     current_video = get_video_path()
     cap = cv2.VideoCapture(current_video)
     
-    print(f"AI Analysis Started on: {current_video}")
+    print(f"AI Plasma Analysis Started: {current_video}")
     
     lower_bright = np.array([0, 0, 200])
     upper_bright = np.array([180, 55, 255])
     
     last_alert_time = 0
-    alert_cooldown = 0.2 
+    alert_cooldown = 2.0 # Wait 2 seconds between alerts to avoid flooding
     
     while True:
-        # Check for config change
         new_video = get_video_path()
         if new_video != current_video:
-            print(f"Video source changed to: {new_video}")
             cap.release()
             current_video = new_video
             cap = cv2.VideoCapture(current_video)
@@ -62,18 +71,14 @@ def detect_plasma():
         hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv, lower_bright, upper_bright)
         
-        kernel = np.ones((3,3), np.uint8)
-        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
-        
         plasma_pixel_count = cv2.countNonZero(mask)
         
         if plasma_pixel_count > 500:
             current_time = time.time()
             if current_time - last_alert_time > alert_cooldown:
-                send_alert(plasma_pixel_count)
+                send_alert(plasma_pixel_count, frame)
                 last_alert_time = current_time
         
-        # CPU relief
         time.sleep(0.01)
 
     cap.release()

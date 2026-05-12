@@ -40,19 +40,20 @@ export default {
   },
   cameras: {
     cam1: 'CAM 01: CABLE TUNNEL',
-    cam2: 'CAM 02: ELECTRICAL CABINET',
-    cam3: 'CAM 03: SURVEILLANCE'
+    cam2: 'CAM 02: ELECTRICAL CABINET 1',
+    cam3: 'CAM 03: ELECTRICAL CABINET 2',
+    cam4: 'CAM 04: AUTHORIZED PERSONNEL'
   },
   alerts: {
     sparkDetected: 'SPARK DETECTED',
-    sparkDesc: 'Location: Surveillance (CAM-03).<br>Possibility of surface discharge.',
+    sparkDesc: 'Location: Electrical Cabinet 2 (CAM-03).<br>Possibility of surface discharge.',
     foreignObject: 'FOREIGN OBJECT DETECTED',
     foreignObjectDesc: 'Location: Cable tunnel (CAM-01).<br>Detected small creature moving near station.',
     systemLogin: 'SYSTEM LOGIN',
     systemLoginDesc: 'Operator:<br>Admin_Substation7 logged in.',
     periodicCheck: 'PERIODIC CHECK',
     periodicCheckDesc: 'AI system automatically completed<br>360-degree scan. No anomalies<br>detected.',
-    plasmaNotification: 'Red Alert: Plasma detected at CAM-02!',
+    plasmaNotification: 'Red Alert: Plasma detected at Electrical Cabinet 1 (CAM-02)!',
     systemTestDesc: 'Simulating plasma spark detection at the substation.'
   }
 }

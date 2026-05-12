@@ -39,20 +39,21 @@ export default {
     videoDisplay: 'Hiển thị Video'
   },
   cameras: {
-    cam1: 'CAM 01: MƯỜNG CÁP',
-    cam2: 'CAM 02: TỦ ĐIỆN',
-    cam3: 'CAM 03: GIÁM SÁT SƯ'
+    cam1: 'CAM 01: MƯƠNG CÁP',
+    cam2: 'CAM 02: TỦ ĐIỆN 1',
+    cam3: 'CAM 03: TỦ ĐIỆN 2',
+    cam4: 'CAM 04: NGƯỜI CÓ CHỨC VỤ'
   },
   alerts: {
     sparkDetected: 'PHÁT HIỆN TIA LỬA ĐIỆN',
-    sparkDesc: 'Vị trí: Giám sát sư (CAM-03).<br>Khả năng xảy ra phóng điện bề mặt.',
+    sparkDesc: 'Vị trí: Tủ điện 2 (CAM-03).<br>Khả năng xảy ra phóng điện bề mặt.',
     foreignObject: 'PHÁT HIỆN VẬT THỂ LẠ',
-    foreignObjectDesc: 'Vị trí: Mường cáp (CAM-01).<br>Phát hiện sinh vật nhỏ di chuyển gần trạm.',
+    foreignObjectDesc: 'Vị trí: Mương cáp (CAM-01).<br>Phát hiện sinh vật nhỏ di chuyển gần trạm.',
     systemLogin: 'ĐĂNG NHẬP HỆ THỐNG',
     systemLoginDesc: 'Người vận hành:<br>Admin_Substation7 đã đăng nhập.',
     periodicCheck: 'KIỂM TRA ĐỊNH KỲ',
     periodicCheckDesc: 'Hệ thống AI tự động hoàn tất<br>quét 360 độ. Không phát hiện<br>bất thường.',
-    plasmaNotification: 'Cảnh báo đỏ: Phát hiện tia điện tại CAM-02!',
+    plasmaNotification: 'Cảnh báo đỏ: Phát hiện tia điện tại Tủ điện 1 (CAM-02)!',
     systemTestDesc: 'Đang giả lập phát hiện tia điện Plasma tại trạm biến áp.'
   }
 }

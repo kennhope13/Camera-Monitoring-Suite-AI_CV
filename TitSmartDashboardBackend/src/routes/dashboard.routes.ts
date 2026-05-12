@@ -13,10 +13,11 @@ router.get('/devices/:id', dashboardController.getDeviceById);
 // New endpoint to toggle video source
 router.post('/toggle-video', (req, res) => {
     const { mode } = req.body;
-    const normalPath = "/home/neit/Desktop/Anh_Nhan/datasets/tiadien_nen/2aOboQVBTTIbZ2S0vm9aBOlNATPyY7NBax6eUP0C.mp4";
-    const testPath = "/home/neit/Desktop/Anh_Nhan/datasets/black_test.mp4";
+    const plasmaVideo = "/home/neit/Desktop/Anh_Nhan/datasets/tiadien_nen/2aOboQVBTTIbZ2S0vm9aBOlNATPyY7NBax6eUP0C.mp4";
+    const darkVideo = "/home/neit/Desktop/Anh_Nhan/datasets/black_test.mp4";
     
-    const targetPath = mode === 'test' ? testPath : normalPath;
+    // Normal Mode = No Plasma (Dark), Test Mode = Simulate Plasma
+    const targetPath = mode === 'test' ? plasmaVideo : darkVideo;
     const configFile = process.env.AI_CONFIG_PATH || path.join(__dirname, '../../ai_config.json');
     const symlinkPath = "/home/neit/Desktop/Anh_Nhan/datasets/active_test_video.mp4";
     
@@ -28,22 +29,20 @@ router.post('/toggle-video', (req, res) => {
         console.log(`📝 Đã cập nhật cấu hình AI: ${targetPath}`);
         
         // 2. Update Symlink
-        // Robustly remove old symlink if it exists (even if broken)
         try {
             if (fs.existsSync(symlinkPath)) fs.unlinkSync(symlinkPath);
         } catch (e) {}
         fs.symlinkSync(targetPath, symlinkPath);
         console.log(`🔗 Đã cập nhật Symlink -> ${targetPath}`);
 
-        // 3. Kill ffmpeg
-        console.log('💥 Đang ép FFmpeg khởi động lại...');
-        exec('pkill -9 -f ffmpeg', (err) => {
-            // Đợi một chút để FFmpeg mới thực sự bắt đầu trước khi báo thành công
+        // 3. Kill specific ffmpeg process (only for cam2)
+        console.log('💥 Đang khởi động lại luồng Cam 2...');
+        exec('pkill -9 -f active_test_video.mp4', (err) => {
             setTimeout(() => {
                 if (err) {
-                    console.warn('⚠️ Không tìm thấy FFmpeg, có thể nó chưa chạy.');
+                    console.warn('⚠️ Không tìm thấy FFmpeg cho Cam 2.');
                 } else {
-                    console.log('✅ FFmpeg đã khởi động lại xong.');
+                    console.log('✅ Đã chuyển đổi luồng Cam 2 thành công.');
                 }
                 res.json({ success: true, mode, path: targetPath });
             }, 500);
