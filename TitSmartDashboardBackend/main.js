@@ -9,10 +9,14 @@ let aiProcess;
 let mediamtxProcess;
 
 function createWindow() {
+  const rootPath = app.isPackaged ? path.join(process.resourcesPath, '..') : __dirname;
+  const iconPath = path.join(rootPath, 'build/icon.png');
+
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
     title: "TitSmart Dashboard AI",
+    icon: iconPath,
     show: true, // Ép hiện cửa sổ ngay
     webPreferences: {
       nodeIntegration: false,

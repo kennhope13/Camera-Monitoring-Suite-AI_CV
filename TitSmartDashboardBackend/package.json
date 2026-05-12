@@ -42,7 +42,8 @@
     "appId": "com.titsmart.dashboard",
     "productName": "TitSmartDashboard",
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "icon": "build/icon.png"
     },
     "files": [
       "main.js",
@@ -64,6 +65,10 @@
       {
         "from": "../lib",
         "to": "lib"
+      },
+      {
+        "from": "build/icon.png",
+        "to": "build/icon.png"
       }
     ]
   }
